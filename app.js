@@ -1,3 +1,4 @@
+import { CycleButton } from "./cycle-button.js";
 export default function app() {
-  return <h1>Test</h1>;
+  return <CycleButton values={["Easy", "Normal", "Hard"]} />;
 }
