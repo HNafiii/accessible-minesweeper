@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
-export default function CycleButton({ values, maxWidth = "auto" }) {
+export default function CycleButton({ values, maxWidth = "auto", padding = "0.5rem" }) {
   const [index, setIndex] = useState(0);
   const [box, setBox] = useState({ width: 0, height: 0 });
   const refs = useRef([]);
@@ -21,12 +21,12 @@ export default function CycleButton({ values, maxWidth = "auto" }) {
             refs.current[index] = el;
             reflow = index + 1 < values.length;
           }}
-          style={{ maxWidth, position: "fixed", visibility: "hidden" }}
+          style={{ maxWidth, padding, position: "fixed", textAlign: "center", visibility: "hidden" }}
         >
           {value}
         </button>
       ))}
-      <button style={{ height, visibility: width && height ? "visible" : "hidden", width }} onClick={handleClick} aria-label={`You are in ${values[index].toLowerCase()} mode. Double tap to change to ${values[(index + 1) % values.length].toLowerCase()} mode`}>
+      <button style={{ height, padding, textAlign: "center", width }} onClick={handleClick} aria-label={`You are in ${values[index].toLowerCase()} mode. Double tap to change to ${values[(index + 1) % values.length].toLowerCase()} mode`}>
         {values[index]}
       </button>
     </>
