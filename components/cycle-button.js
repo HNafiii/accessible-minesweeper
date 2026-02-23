@@ -2,10 +2,11 @@ import { useLayoutEffect, useRef, useState } from "react";
 export default function CycleButton({ values, maxWidth = "auto" }) {
   const [index, setIndex] = useState(0);
   const [box, setBox] = useState({ width: 0, height: 0 });
-  const sourceRefs = useRef([]);
+  const refs = useRef([]);
+  let reflow = false;
   useLayoutEffect(() => {
-    setBox((b) => ({ width: Math.max(...sourceRefs.current.map((sourceRef) => sourceRef.getBoundingClientRect().width)), height: Math.max(...sourceRefs.current.map((sourceRef) => sourceRef.getBoundingClientRect().height)) }));
-  }, [values]);
+    setBox((b) => ({ width: Math.max(...refs.current.map((ref) => ref.getBoundingClientRect().width)), height: Math.max(...refs.current.map((ref) => ref.getBoundingClientRect().height)) }));
+  }, [reflow]);
 
   function handleClick() {
     setIndex((index + 1) % values.length);
@@ -14,7 +15,14 @@ export default function CycleButton({ values, maxWidth = "auto" }) {
   return (
     <>
       {values.map((value, index) => (
-        <button key={index} ref={(el) => (sourceRefs.current[index] = el)} style={{ maxWidth, position: "fixed", visibility: "hidden" }}>
+        <button
+          key={index}
+          ref={(el) => {
+            refs.current[index] = el;
+            reflow = index + 1 < values.length;
+          }}
+          style={{ maxWidth, position: "fixed", visibility: "hidden" }}
+        >
           {value}
         </button>
       ))}
