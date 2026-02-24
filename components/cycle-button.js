@@ -1,32 +1,32 @@
 import { useLayoutEffect, useRef, useState } from "react";
-export default function CycleButton({ values, maxWidth = "auto", padding = "0.5rem" }) {
+export default function CycleButton({ values, maxWidth = "auto" }) {
   const [index, setIndex] = useState(0);
   const [box, setBox] = useState({ width: 0, height: 0 });
   const refs = useRef([]);
-  let reflow = false;
+
   useLayoutEffect(() => {
-    setBox((b) => ({ width: Math.max(...refs.current.map((ref) => ref.getBoundingClientRect().width)), height: Math.max(...refs.current.map((ref) => ref.getBoundingClientRect().height)) }));
-  }, [reflow]);
+    const validRefs = refs.current.filter(Boolean);
+    if (validRefs.length === 0) return;
+
+    const maxWidthCalc = Math.max(...validRefs.map((ref) => ref.getBoundingClientRect().width));
+    const maxHeightCalc = Math.max(...validRefs.map((ref) => ref.getBoundingClientRect().height));
+
+    setBox({ width: maxWidthCalc, height: maxHeightCalc });
+  }, [values]);
 
   function handleClick() {
-    setIndex((index + 1) % values.length);
+    setIndex((i) => (i + 1) % values.length);
   }
-  const { width, height } = box;
+
   return (
     <>
-      {values.map((value, index) => (
-        <button
-          key={index}
-          ref={(el) => {
-            refs.current[index] = el;
-            reflow = index + 1 < values.length;
-          }}
-          style={{ maxWidth, padding, position: "fixed", textAlign: "center", visibility: "hidden" }}
-        >
+      {values.map((value, valueIndex) => (
+        <button key={valueIndex} ref={(el) => (refs.current[valueIndex] = el)} style={{ maxWidth, pointerEvents: "none", position: "absolute", userSelect: "none", visibility: "hidden" }} aria-hidden="true">
           {value}
         </button>
       ))}
-      <button style={{ height, padding, textAlign: "center", width }} onClick={handleClick} aria-label={`You are in ${values[index].toLowerCase()} mode. Double tap to change to ${values[(index + 1) % values.length].toLowerCase()} mode`}>
+
+      <button style={{ height: box.height > 0 ? box.height : "auto", textAlign: "center", userSelect: "none", width: box.width > 0 ? box.width : "auto" }} onClick={handleClick} aria-label={`You are in ${values[index].toLowerCase()} mode. Double tap to change to ${values[(index + 1) % values.length].toLowerCase()} mode`}>
         {values[index]}
       </button>
     </>
