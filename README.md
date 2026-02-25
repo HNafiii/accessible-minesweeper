@@ -1,1 +1,1 @@
-I'm redeveloping the classic Microsoft's puzzle game, "Minesweeper". The game is played for normal users, but  low-vision users. This project buiilt with React and some usage of Web Accessibility API.
+I am redeveloping the classic Microsoft's puzzle game, "Minesweeper". The game is played normal users. In addition, the game also played by low-vision users. This project buiilt with React and some usage of Web Accessibility API.
